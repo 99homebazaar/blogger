@@ -10,24 +10,21 @@ const upload = multer({ storage: multer.memoryStorage() });
 // POST /api/posts
 router.post("/", upload.single("image"), async (req: Request, res: Response) => {
   try {
-    const { title, description, shortDescription, category, websiteNames } = req.body;
+    const { title, description, shortDescription, category, websiteNames, url } = req.body;
 
-    if (!title || !description || !shortDescription || !category || !req.file) {
-      res.status(400).json({ error: "All fields including image are required" });
+    if (!title || !description || !shortDescription || !category || !url || !req.file) {
+      res.status(400).json({ error: "All fields including image and url are required" });
       return;
     }
 
-    // configure cloudinary here so dotenv is already loaded
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
     });
 
-    // parse websiteNames (sent as JSON string from FormData)
     const nameList: string[] = typeof websiteNames === "string" ? JSON.parse(websiteNames) : websiteNames ?? [];
 
-    // validate names only if provided
     let websiteIds: any[] = [];
     if (nameList.length > 0) {
       const foundWebsites = await Website.find({ name: { $in: nameList } });
@@ -45,12 +42,10 @@ router.post("/", upload.single("image"), async (req: Request, res: Response) => 
     const uploaded = await cloudinary.uploader.upload(dataUri, { folder: "blogger" });
 
     const post = await Post.create({
-      title,
-      description,
-      shortDescription,
-      category,
+      title, description, shortDescription, category,
       imageUrl: uploaded.secure_url,
       websiteNames: websiteIds,
+      url,
     });
 
     const populated = await post.populate("websiteNames", "name");
@@ -64,6 +59,20 @@ router.post("/", upload.single("image"), async (req: Request, res: Response) => 
 router.get("/", async (_req: Request, res: Response) => {
   try {
     const posts = await Post.find().populate("websiteNames", "name").sort({ createdAt: -1 });
+    res.json({ posts });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+});
+
+// GET /api/posts/name/:name — must be before /:id
+router.get("/name/:name", async (req: Request, res: Response) => {
+  try {
+    const name = req.params.name;
+    const website = await Website.findOne({ name });
+    if (!website) { res.status(404).json({ error: "Website not found" }); return; }
+
+    const posts = await Post.find({ websiteNames: website._id }).populate("websiteNames", "name");
     res.json({ posts });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
@@ -86,18 +95,6 @@ router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await Post.findByIdAndDelete(req.params.id);
     res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
-  }
-});
-
-router.get("/name/:name", async (req: Request, res: Response) => {
-try {
-    const website = await Website.findOne({ name: req.params.name });
-    if (!website) { res.status(404).json({ error: "Website not found" }); return; }
-
-    const posts = await Post.find({ websiteNames: website._id });
-    res.json({ posts });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
   }

@@ -7,7 +7,7 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 type Website = { _id: string; name: string };
 
 export default function CreatePost() {
-  const [form, setForm] = useState({ title: "", description: "", shortDescription: "", category: "" });
+  const [form, setForm] = useState({ title: "", description: "", shortDescription: "", category: "", url: "" });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
   const [websites, setWebsites] = useState<Website[]>([]);
@@ -46,6 +46,7 @@ export default function CreatePost() {
       fd.append("description", form.description);
       fd.append("shortDescription", form.shortDescription);
       fd.append("category", form.category);
+      fd.append("url", form.url);
       fd.append("websiteNames", JSON.stringify(selected));
 
       const res = await fetch(`${API}/api/posts`, { method: "POST", body: fd });
@@ -54,7 +55,7 @@ export default function CreatePost() {
 
       if (!res.ok) { setError(data.error || "Failed to publish"); return; }
       setSuccess(true);
-      setForm({ title: "", description: "", shortDescription: "", category: "" });
+      setForm({ title: "", description: "", shortDescription: "", category: "", url: "" });
       setImageFile(null);
       setPreview("");
       setSelected([]);
@@ -62,7 +63,6 @@ export default function CreatePost() {
     } catch (err) {
       setLoading(false);
       setError((err as Error).message || "Network error");
-      console.error(err);
     }
   };
 
@@ -73,18 +73,21 @@ export default function CreatePost() {
       <div className="card flex flex-col gap-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-          <input className="input" name="title" placeholder="Title" required
+          <input className="input" placeholder="Title" required
             value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
 
-          <input className="input" name="shortDescription" placeholder="Short Description" required
+          <input className="input" placeholder="Short Description" required
             value={form.shortDescription} onChange={(e) => setForm({ ...form, shortDescription: e.target.value })} />
 
-          <textarea className="input resize-none" name="description" placeholder="Full Description"
+          <textarea className="input resize-none" placeholder="Full Description"
             required rows={5} value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })} />
 
-          <input className="input" name="category" placeholder="Category" required
+          <input className="input" placeholder="Category" required
             value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
+
+          <input className="input" placeholder="Redirect URL (e.g. https://dev.to/my-post)" required
+            value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} />
 
           {/* Image */}
           <div className="flex flex-col gap-2">
