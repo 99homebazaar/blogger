@@ -52,7 +52,7 @@ export default function PostsPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-xl font-bold mb-6 text-white">All Posts ({posts.length})</h1>
+      <h1 className="text-xl font-bold mb-6 text-gray-800">All Posts ({posts.length})</h1>
 
       {/* Website filter */}
       <div className="flex flex-wrap gap-2 mb-6">
@@ -60,7 +60,7 @@ export default function PostsPage() {
           className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all cursor-pointer ${
             activeFilter === "all"
               ? "bg-indigo-600 border-indigo-600 text-white"
-              : "bg-transparent border-white/10 text-gray-400 hover:border-indigo-500/50"
+              : "bg-white border-gray-200 text-gray-500 hover:border-indigo-400 hover:text-indigo-500"
           }`}>
           All
         </button>
@@ -69,7 +69,7 @@ export default function PostsPage() {
             className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all cursor-pointer ${
               activeFilter === w.name
                 ? "bg-indigo-600 border-indigo-600 text-white"
-                : "bg-transparent border-white/10 text-gray-400 hover:border-indigo-500/50"
+                : "bg-white border-gray-200 text-gray-500 hover:border-indigo-400 hover:text-indigo-500"
             }`}>
             {w.name}
           </button>
@@ -89,9 +89,9 @@ export default function PostsPage() {
               className="w-28 h-24 rounded-xl object-cover shrink-0" />
             <div className="flex flex-col flex-1 gap-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
-                <h2 className="text-base font-semibold text-white truncate">{post.title}</h2>
+                <h2 className="text-base font-semibold text-gray-800 truncate">{post.title}</h2>
                 <button onClick={() => deletePost(post._id)}
-                  className="text-xs text-gray-600 hover:text-red-400 transition-colors shrink-0 cursor-pointer">
+                  className="text-xs text-gray-400 hover:text-red-400 transition-colors shrink-0 cursor-pointer">
                   Delete
                 </button>
               </div>

@@ -40,7 +40,7 @@ export default function WebsitesPage() {
 
   return (
     <div className="max-w-xl mx-auto">
-      <h1 className="text-xl font-bold mb-6 text-white">Manage Websites</h1>
+      <h1 className="text-xl font-bold mb-6 text-gray-800">Manage Websites</h1>
 
       {/* Add form */}
       <div className="card mb-6">
@@ -61,10 +61,10 @@ export default function WebsitesPage() {
           <p className="text-sm text-gray-600 italic">No websites yet. Add one above.</p>
         )}
         {websites.map((w) => (
-          <div key={w._id} className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-            <span className="text-sm text-gray-200">{w.name}</span>
+          <div key={w._id} className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200">
+            <span className="text-sm text-gray-700">{w.name}</span>
             <button onClick={() => deleteWebsite(w._id)}
-              className="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer px-2 py-1">
+              className="text-xs text-gray-400 hover:text-red-400 transition-colors cursor-pointer px-2 py-1">
               Remove
             </button>
           </div>

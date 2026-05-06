@@ -104,7 +104,7 @@ export default function CreatePost() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-xl font-bold mb-6 text-white">Create Post</h1>
+      <h1 className="text-xl font-bold mb-6 text-gray-800">Create Post</h1>
 
       <div className="card flex flex-col gap-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -134,9 +134,9 @@ export default function CreatePost() {
           {/* Image */}
           <div className="flex flex-col gap-2">
             <label className="text-xs text-gray-500 uppercase tracking-wider">Cover Image</label>
-            <label className="flex items-center gap-3 cursor-pointer bg-[#13131f] border border-dashed border-white/10 rounded-xl p-4 hover:border-indigo-500/50 transition-colors">
+            <label className="flex items-center gap-3 cursor-pointer bg-gray-50 border border-dashed border-gray-300 rounded-xl p-4 hover:border-indigo-400 transition-colors">
               <span className="text-2xl">🖼️</span>
-              <span className="text-sm text-gray-400">{imageFile ? imageFile.name : "Click to upload image"}</span>
+              <span className="text-sm text-gray-500">{imageFile ? imageFile.name : "Click to upload image"}</span>
               <input type="file" accept="image/*" onChange={handleImage} className="hidden" required />
             </label>
             {preview && <img src={preview} alt="preview" className="rounded-xl h-44 object-cover w-full" />}
@@ -154,7 +154,7 @@ export default function CreatePost() {
                     className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all cursor-pointer ${
                       selected.includes(w.name)
                         ? "bg-indigo-600 border-indigo-600 text-white"
-                        : "bg-transparent border-white/10 text-gray-400 hover:border-indigo-500/50"
+                        : "bg-white border-gray-200 text-gray-500 hover:border-indigo-400 hover:text-indigo-500"
                     }`}>
                     {w.name}
                   </button>

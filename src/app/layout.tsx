@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen">
+      <body className="flex min-h-screen bg-[#f5f5f7]">
         {/* Sidebar */}
-        <aside className="w-56 shrink-0 border-r border-white/5 bg-[#0d0d14] flex flex-col p-5 gap-1">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">Blogger</p>
+        <aside className="w-56 shrink-0 border-r border-gray-200 bg-white flex flex-col p-5 gap-1">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Blogger</p>
           <Link href="/" className="sidebar-link">✏️ Create Post</Link>
           <Link href="/posts" className="sidebar-link">📄 All Posts</Link>
           <Link href="/websites" className="sidebar-link">🌐 Websites</Link>
