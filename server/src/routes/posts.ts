@@ -5,7 +5,7 @@ import Post from "../models/Post";
 import Website from "../models/Website";
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
 
 // POST /api/posts
 router.post("/", upload.single("image"), async (req: Request, res: Response) => {
