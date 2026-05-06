@@ -10,7 +10,6 @@ type Post = {
   shortDescription: string;
   category: string;
   imageUrl: string;
-  url: string;
   websiteNames: { _id: string; name: string }[];
   createdAt: string;
 };
@@ -90,10 +89,7 @@ export default function PostsPage() {
               className="w-28 h-24 rounded-xl object-cover shrink-0" />
             <div className="flex flex-col flex-1 gap-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
-                <a href={post.url} target="_blank" rel="noreferrer"
-                  className="text-base font-semibold text-white truncate hover:text-indigo-400 transition-colors">
-                  {post.title} ↗
-                </a>
+                <h2 className="text-base font-semibold text-white truncate">{post.title}</h2>
                 <button onClick={() => deletePost(post._id)}
                   className="text-xs text-gray-600 hover:text-red-400 transition-colors shrink-0 cursor-pointer">
                   Delete

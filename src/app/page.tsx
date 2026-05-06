@@ -21,7 +21,7 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 type Website = { _id: string; name: string };
 
 export default function CreatePost() {
-  const [form, setForm] = useState({ title: "", description: "", shortDescription: "", category: "", url: "" });
+  const [form, setForm] = useState({ title: "", description: "", shortDescription: "", category: "" });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
   const [websites, setWebsites] = useState<Website[]>([]);
@@ -82,7 +82,6 @@ export default function CreatePost() {
           description: form.description,
           shortDescription: form.shortDescription,
           category: form.category,
-          url: form.url,
           imageUrl: uploadData.secure_url,
           websiteNames: selected,
         }),
@@ -92,7 +91,7 @@ export default function CreatePost() {
 
       if (!res.ok) { setError(data.error || "Failed to publish"); return; }
       setSuccess(true);
-      setForm({ title: "", description: "", shortDescription: "", category: "", url: "" });
+      setForm({ title: "", description: "", shortDescription: "", category: "" });
       setImageFile(null);
       setPreview("");
       setSelected([]);
@@ -131,9 +130,6 @@ export default function CreatePost() {
 
           <input className="input" placeholder="Category" required
             value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
-
-          <input className="input" placeholder="Redirect URL (e.g. https://dev.to/my-post)" required
-            value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} />
 
           {/* Image */}
           <div className="flex flex-col gap-2">

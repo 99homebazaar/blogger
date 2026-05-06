@@ -7,9 +7,9 @@ const router = Router();
 // POST /api/posts
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { title, description, shortDescription, category, websiteNames, url, imageUrl } = req.body;
+    const { title, description, shortDescription, category, websiteNames, imageUrl } = req.body;
 
-    if (!title || !description || !shortDescription || !category || !url || !imageUrl) {
+    if (!title || !description || !shortDescription || !category || !imageUrl) {
       res.status(400).json({ error: "All fields are required" });
       return;
     }
@@ -30,7 +30,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     const post = await Post.create({
       title, description, shortDescription, category,
-      imageUrl, url,
+      imageUrl,
       websiteNames: websiteIds,
     });
 

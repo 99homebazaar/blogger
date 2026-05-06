@@ -8,7 +8,6 @@ const PostSchema = new Schema(
     category: { type: String, required: true },
     imageUrl: { type: String, required: true },
     websiteNames: [{ type: Schema.Types.ObjectId, ref: "Website" }],
-    url: { type: String, required: true },
   },
   { timestamps: true }
 );
