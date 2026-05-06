@@ -58,7 +58,7 @@ router.post("/", upload.single("image"), async (req: Request, res: Response) => 
 // GET /api/posts
 router.get("/", async (_req: Request, res: Response) => {
   try {
-    const posts = await Post.find().populate("websiteNames", "name").sort({ createdAt: -1 });
+    const posts = await (await Post.find().populate("websiteNames", "name").select("-description").sort({ createdAt: -1 }));
     res.json({ posts });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
