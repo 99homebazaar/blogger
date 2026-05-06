@@ -1,29 +1,20 @@
 import { Router, Request, Response } from "express";
-import { v2 as cloudinary } from "cloudinary";
-import multer from "multer";
 import Post from "../models/Post";
 import Website from "../models/Website";
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
 
 // POST /api/posts
-router.post("/", upload.single("image"), async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   try {
-    const { title, description, shortDescription, category, websiteNames, url } = req.body;
+    const { title, description, shortDescription, category, websiteNames, url, imageUrl } = req.body;
 
-    if (!title || !description || !shortDescription || !category || !url || !req.file) {
-      res.status(400).json({ error: "All fields including image and url are required" });
+    if (!title || !description || !shortDescription || !category || !url || !imageUrl) {
+      res.status(400).json({ error: "All fields are required" });
       return;
     }
 
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-
-    const nameList: string[] = typeof websiteNames === "string" ? JSON.parse(websiteNames) : websiteNames ?? [];
+    const nameList: string[] = Array.isArray(websiteNames) ? websiteNames : JSON.parse(websiteNames ?? "[]");
 
     let websiteIds: any[] = [];
     if (nameList.length > 0) {
@@ -37,15 +28,10 @@ router.post("/", upload.single("image"), async (req: Request, res: Response) => 
       websiteIds = foundWebsites.map((w) => w._id);
     }
 
-    const base64 = req.file.buffer.toString("base64");
-    const dataUri = `data:${req.file.mimetype};base64,${base64}`;
-    const uploaded = await cloudinary.uploader.upload(dataUri, { folder: "blogger" });
-
     const post = await Post.create({
       title, description, shortDescription, category,
-      imageUrl: uploaded.secure_url,
+      imageUrl, url,
       websiteNames: websiteIds,
-      url,
     });
 
     const populated = await post.populate("websiteNames", "name");
@@ -58,7 +44,7 @@ router.post("/", upload.single("image"), async (req: Request, res: Response) => 
 // GET /api/posts
 router.get("/", async (_req: Request, res: Response) => {
   try {
-    const posts = await (await Post.find().populate("websiteNames", "name").select("-description").sort({ createdAt: -1 }));
+    const posts = await Post.find().populate("websiteNames", "name").sort({ createdAt: -1 });
     res.json({ posts });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
@@ -72,7 +58,7 @@ router.get("/name/:name", async (req: Request, res: Response) => {
     const website = await Website.findOne({ name });
     if (!website) { res.status(404).json({ error: "Website not found" }); return; }
 
-    const posts = await Post.find({ websiteNames: website._id }).populate("websiteNames", "name").select("-description").sort({ createdAt: -1 });
+    const posts = await Post.find({ websiteNames: website._id }).populate("websiteNames", "name");
     res.json({ posts });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });

@@ -6,6 +6,7 @@ import cors from "cors";
 import { connectDB } from "./db";
 import postRoutes from "./routes/posts";
 import websiteRoutes from "./routes/websites";
+import signRoute from "./routes/sign";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 app.use("/api/posts", postRoutes);
 app.use("/api/websites", websiteRoutes);
+app.use("/api/sign", signRoute);
 
 app.get("/", (_req, res) => res.json({ message: "Blogger API running" }));
 

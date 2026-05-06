@@ -54,16 +54,39 @@ export default function CreatePost() {
     setLoading(true);
 
     try {
-      const fd = new FormData();
-      fd.append("image", imageFile);
-      fd.append("title", form.title);
-      fd.append("description", form.description);
-      fd.append("shortDescription", form.shortDescription);
-      fd.append("category", form.category);
-      fd.append("url", form.url);
-      fd.append("websiteNames", JSON.stringify(selected));
+      // 1. Get signature from backend
+      const sigRes = await fetch(`${API}/api/sign`);
+      const { timestamp, signature, api_key, cloud_name } = await sigRes.json();
 
-      const res = await fetch(`${API}/api/posts`, { method: "POST", body: fd });
+      // 2. Upload directly to Cloudinary
+      const fd = new FormData();
+      fd.append("file", imageFile);
+      fd.append("timestamp", timestamp);
+      fd.append("signature", signature);
+      fd.append("api_key", api_key);
+      fd.append("folder", "blogger");
+
+      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+        method: "POST",
+        body: fd,
+      });
+      const uploadData = await uploadRes.json();
+      if (!uploadRes.ok) { setError(uploadData.error?.message || "Image upload failed"); setLoading(false); return; }
+
+      // 3. Send post data with imageUrl to backend
+      const res = await fetch(`${API}/api/posts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: form.title,
+          description: form.description,
+          shortDescription: form.shortDescription,
+          category: form.category,
+          url: form.url,
+          imageUrl: uploadData.secure_url,
+          websiteNames: selected,
+        }),
+      });
       const data = await res.json();
       setLoading(false);
 
