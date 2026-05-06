@@ -1,6 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import "react-quill-new/dist/quill.snow.css";
+
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+
+const quillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    ["link", "blockquote", "code-block"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["clean"],
+  ],
+};
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -79,9 +93,18 @@ export default function CreatePost() {
           <input className="input" placeholder="Short Description" required
             value={form.shortDescription} onChange={(e) => setForm({ ...form, shortDescription: e.target.value })} />
 
-          <textarea className="input resize-none" placeholder="Full Description"
-            required rows={5} value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-500 uppercase tracking-wider">Full Description</label>
+            <div className="quill-dark">
+              <ReactQuill
+                theme="snow"
+                value={form.description}
+                onChange={(val) => setForm({ ...form, description: val })}
+                modules={quillModules}
+                placeholder="Write your full description here..."
+              />
+            </div>
+          </div>
 
           <input className="input" placeholder="Category" required
             value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
