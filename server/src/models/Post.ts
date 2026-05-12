@@ -8,6 +8,11 @@ const PostSchema = new Schema(
     category: { type: String, required: true },
     imageUrl: { type: String, required: true },
     websiteNames: [{ type: Schema.Types.ObjectId, ref: "Website" }],
+    metaTitle: { type: String, default: "" },
+    metaDescription: { type: String, default: "" },
+    slug: { type: String, default: "" },
+    imgAlt: { type: String, default: "" },
+    schemaMarkup: { type: String, default: "" },
   },
   { timestamps: true }
 );

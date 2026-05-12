@@ -7,7 +7,8 @@ const router = Router();
 // POST /api/posts
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { title, description, shortDescription, category, websiteNames, imageUrl } = req.body;
+    const { title, description, shortDescription, category, websiteNames, imageUrl,
+      metaTitle, metaDescription, slug, imgAlt, schemaMarkup } = req.body;
 
     if (!title || !description || !shortDescription || !category || !imageUrl) {
       res.status(400).json({ error: "All fields are required" });
@@ -30,8 +31,8 @@ router.post("/", async (req: Request, res: Response) => {
 
     const post = await Post.create({
       title, description, shortDescription, category,
-      imageUrl,
-      websiteNames: websiteIds,
+      imageUrl, websiteNames: websiteIds,
+      metaTitle, metaDescription, slug, imgAlt, schemaMarkup,
     });
 
     const populated = await post.populate("websiteNames", "name");
@@ -44,7 +45,7 @@ router.post("/", async (req: Request, res: Response) => {
 // GET /api/posts
 router.get("/", async (_req: Request, res: Response) => {
   try {
-    const posts = await Post.find().populate("websiteNames", "name").sort({ createdAt: -1 });
+    const posts = await Post.find().populate("websiteNames", "name").select("-description -metaTitle -metaDescription -slug -schemaMarkup").sort({ createdAt: -1 });
     res.json({ posts });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
@@ -58,7 +59,7 @@ router.get("/name/:name", async (req: Request, res: Response) => {
     const website = await Website.findOne({ name });
     if (!website) { res.status(404).json({ error: "Website not found" }); return; }
 
-    const posts = await Post.find({ websiteNames: website._id }).populate("websiteNames", "name");
+    const posts = await Post.find({ websiteNames: website._id }).populate("websiteNames", "name").select("-description -metaTitle -metaDescription -slug -schemaMarkup").sort({ createdAt: -1 });
     res.json({ posts });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });

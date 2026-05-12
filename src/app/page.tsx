@@ -20,8 +20,14 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 type Website = { _id: string; name: string };
 
+const toSlug = (text: string) =>
+  text.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
+
 export default function CreatePost() {
-  const [form, setForm] = useState({ title: "", description: "", shortDescription: "", category: "" });
+  const [form, setForm] = useState({
+    title: "", description: "", shortDescription: "", category: "",
+    metaTitle: "", metaDescription: "", slug: "", imgAlt: "", schemaMarkup: "",
+  });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
   const [websites, setWebsites] = useState<Website[]>([]);
@@ -54,11 +60,9 @@ export default function CreatePost() {
     setLoading(true);
 
     try {
-      // 1. Get signature from backend
       const sigRes = await fetch(`${API}/api/sign`);
       const { timestamp, signature, api_key, cloud_name } = await sigRes.json();
 
-      // 2. Upload directly to Cloudinary
       const fd = new FormData();
       fd.append("file", imageFile);
       fd.append("timestamp", timestamp);
@@ -73,7 +77,6 @@ export default function CreatePost() {
       const uploadData = await uploadRes.json();
       if (!uploadRes.ok) { setError(uploadData.error?.message || "Image upload failed"); setLoading(false); return; }
 
-      // 3. Send post data with imageUrl to backend
       const res = await fetch(`${API}/api/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -84,6 +87,11 @@ export default function CreatePost() {
           category: form.category,
           imageUrl: uploadData.secure_url,
           websiteNames: selected,
+          metaTitle: form.metaTitle,
+          metaDescription: form.metaDescription,
+          slug: form.slug,
+          imgAlt: form.imgAlt,
+          schemaMarkup: form.schemaMarkup,
         }),
       });
       const data = await res.json();
@@ -91,7 +99,7 @@ export default function CreatePost() {
 
       if (!res.ok) { setError(data.error || "Failed to publish"); return; }
       setSuccess(true);
-      setForm({ title: "", description: "", shortDescription: "", category: "" });
+      setForm({ title: "", description: "", shortDescription: "", category: "", metaTitle: "", metaDescription: "", slug: "", imgAlt: "", schemaMarkup: "" });
       setImageFile(null);
       setPreview("");
       setSelected([]);
@@ -109,8 +117,11 @@ export default function CreatePost() {
       <div className="card flex flex-col gap-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-          <input className="input" placeholder="Title" required
-            value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+          <input className="input" placeholder="H1 Tag / Title" required
+            value={form.title} onChange={(e) => {
+              const title = e.target.value;
+              setForm((f) => ({ ...f, title, slug: toSlug(title), metaTitle: f.metaTitle || title }));
+            }} />
 
           <input className="input" placeholder="Short Description" required
             value={form.shortDescription} onChange={(e) => setForm({ ...form, shortDescription: e.target.value })} />
@@ -131,6 +142,22 @@ export default function CreatePost() {
           <input className="input" placeholder="Category" required
             value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
 
+          {/* SEO Fields */}
+          <div className="flex flex-col gap-3 border border-dashed border-indigo-200 rounded-xl p-4 bg-indigo-50/40">
+            <p className="text-xs text-indigo-400 uppercase tracking-wider font-semibold">SEO Settings</p>
+            <input className="input" placeholder="Meta Title"
+              value={form.metaTitle} onChange={(e) => setForm({ ...form, metaTitle: e.target.value })} />
+            <input className="input" placeholder="Meta Description"
+              value={form.metaDescription} onChange={(e) => setForm({ ...form, metaDescription: e.target.value })} />
+            <input className="input" placeholder="SEO Slug (auto-generated from title)"
+              value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
+            <input className="input" placeholder="Image Alt Tag"
+              value={form.imgAlt} onChange={(e) => setForm({ ...form, imgAlt: e.target.value })} />
+            <textarea className="input resize-none" rows={4}
+              placeholder={`Schema Markup (JSON-LD)\n{\n  "@context": "https://schema.org",\n  "@type": "Article"\n}`}
+              value={form.schemaMarkup} onChange={(e) => setForm({ ...form, schemaMarkup: e.target.value })} />
+          </div>
+
           {/* Image */}
           <div className="flex flex-col gap-2">
             <label className="text-xs text-gray-500 uppercase tracking-wider">Cover Image</label>
@@ -139,7 +166,7 @@ export default function CreatePost() {
               <span className="text-sm text-gray-500">{imageFile ? imageFile.name : "Click to upload image"}</span>
               <input type="file" accept="image/*" onChange={handleImage} className="hidden" required />
             </label>
-            {preview && <img src={preview} alt="preview" className="rounded-xl h-44 object-cover w-full" />}
+            {preview && <img src={preview} alt={form.imgAlt || "preview"} className="rounded-xl h-44 object-cover w-full" />}
           </div>
 
           {/* Websites */}
