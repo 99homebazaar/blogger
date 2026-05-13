@@ -42,7 +42,7 @@ export default function RichEditor({ value, onChange, placeholder }: Props) {
   // sync external value changes (e.g. edit page load)
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value, false);
+      editor.commands.setContent(value);
     }
   }, [value, editor]);
 
