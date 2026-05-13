@@ -59,7 +59,7 @@ router.get("/name/:name", async (req: Request, res: Response) => {
     const website = await Website.findOne({ name });
     if (!website) { res.status(404).json({ error: "Website not found" }); return; }
 
-    const posts = await Post.find({ websiteNames: website._id }).populate("websiteNames", "name").select("-description -metaTitle -metaDescription -slug -schemaMarkup").sort({ createdAt: -1 });
+    const posts = await Post.find({ websiteNames: website._id }).populate("websiteNames", "name").select("-description -metaTitle -metaDescription -schemaMarkup").sort({ createdAt: -1 });
     res.json({ posts });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
