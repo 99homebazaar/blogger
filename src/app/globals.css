@@ -75,34 +75,3 @@ body {
   border-radius: 999px;
 }
 
-/* Quill light theme */
-.quill-dark .ql-toolbar {
-  background: #ffffff;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 10px 10px 0 0;
-}
-.quill-dark .ql-container {
-  background: #ffffff;
-  border: 1px solid #e5e7eb !important;
-  border-top: none !important;
-  border-radius: 0 0 10px 10px;
-  font-size: 14px;
-  color: #1a1a2e;
-  min-height: 140px;
-}
-.quill-dark .ql-editor.ql-blank::before {
-  color: #9ca3af;
-  font-style: normal;
-}
-.quill-dark .ql-toolbar .ql-stroke { stroke: #6b7280; }
-.quill-dark .ql-toolbar .ql-fill { fill: #6b7280; }
-.quill-dark .ql-toolbar .ql-picker { color: #6b7280; }
-.quill-dark .ql-toolbar button:hover .ql-stroke,
-.quill-dark .ql-toolbar button.ql-active .ql-stroke { stroke: #6366f1; }
-.quill-dark .ql-toolbar button:hover .ql-fill,
-.quill-dark .ql-toolbar button.ql-active .ql-fill { fill: #6366f1; }
-.quill-dark .ql-toolbar .ql-picker-options {
-  background: #ffffff;
-  border-color: #e5e7eb;
-}
-.quill-dark .ql-editor a { color: #6366f1; }

@@ -2,19 +2,10 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import "react-quill-new/dist/quill.snow.css";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
 
-const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
-
-const quillModules = {
-  toolbar: [
-    [{ header: [1, 2, 3, false] }],
-    ["bold", "italic", "underline", "strike"],
-    ["link", "blockquote", "code-block"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["clean"],
-  ],
-};
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -128,13 +119,12 @@ export default function CreatePost() {
 
           <div className="flex flex-col gap-1">
             <label className="text-xs text-gray-500 uppercase tracking-wider">Full Description</label>
-            <div className="quill-dark">
-              <ReactQuill
-                theme="snow"
+            <div data-color-mode="light">
+              <MDEditor
                 value={form.description}
-                onChange={(val) => setForm({ ...form, description: val })}
-                modules={quillModules}
-                placeholder="Write your full description here..."
+                onChange={(val) => setForm({ ...form, description: val ?? "" })}
+                height={250}
+                preview="edit"
               />
             </div>
           </div>

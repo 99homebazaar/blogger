@@ -8,13 +8,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "@uiw/react-md-editor": "^4.1.0",
     "axios": "^1.16.0",
     "cloudinary": "^2.10.0",
     "mongoose": "^9.6.1",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-quill-new": "^3.8.3"
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

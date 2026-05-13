@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -90,10 +91,20 @@ export default function PostsPage() {
             <div className="flex flex-col flex-1 gap-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
                 <h2 className="text-base font-semibold text-gray-800 truncate">{post.title}</h2>
-                <button onClick={() => deletePost(post._id)}
-                  className="text-xs text-gray-400 hover:text-red-400 transition-colors shrink-0 cursor-pointer">
-                  Delete
-                </button>
+                <div className="flex gap-2 shrink-0">
+                  <Link href={`/posts/${post._id}/preview`}
+                    className="text-xs text-indigo-500 hover:text-indigo-700 transition-colors cursor-pointer">
+                    Preview
+                  </Link>
+                  <Link href={`/posts/${post._id}/edit`}
+                    className="text-xs text-gray-400 hover:text-gray-700 transition-colors cursor-pointer">
+                    Edit
+                  </Link>
+                  <button onClick={() => deletePost(post._id)}
+                    className="text-xs text-gray-400 hover:text-red-400 transition-colors cursor-pointer">
+                    Delete
+                  </button>
+                </div>
               </div>
               <p className="text-sm text-gray-500 truncate">{post.shortDescription}</p>
               <div className="flex items-center gap-2 mt-auto flex-wrap">

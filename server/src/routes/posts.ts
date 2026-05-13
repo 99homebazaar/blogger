@@ -92,6 +92,33 @@ router.get("/slug/:slug", async (req: Request, res: Response) => {
   }
 });
 
+// PUT /api/posts/:id
+router.put("/:id", async (req: Request, res: Response) => {
+  try {
+    const { title, description, shortDescription, category, websiteNames, imageUrl,
+      metaTitle, metaDescription, slug, imgAlt, schemaMarkup } = req.body;
+
+    const nameList: string[] = Array.isArray(websiteNames) ? websiteNames : JSON.parse(websiteNames ?? "[]");
+    let websiteIds: any[] = [];
+    if (nameList.length > 0) {
+      const foundWebsites = await Website.find({ name: { $in: nameList } });
+      websiteIds = foundWebsites.map((w) => w._id);
+    }
+
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      { title, description, shortDescription, category, imageUrl,
+        websiteNames: websiteIds, metaTitle, metaDescription, slug, imgAlt, schemaMarkup },
+      { new: true }
+    ).populate("websiteNames", "name");
+
+    if (!post) { res.status(404).json({ error: "Post not found" }); return; }
+    res.json({ success: true, post });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+});
+
 // DELETE /api/posts/:id
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
