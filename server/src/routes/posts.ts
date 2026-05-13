@@ -81,8 +81,8 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-// GET /api/posts/:slug
-router.get("/:slug", async (req: Request, res: Response) => {
+// GET /api/posts/slug/:slug
+router.get("/slug/:slug", async (req: Request, res: Response) => {
   try {
     const post = await Post.findOne({ slug: req.params.slug }).populate("websiteNames", "name");
     if (!post) { res.status(404).json({ error: "Post not found" }); return; }
