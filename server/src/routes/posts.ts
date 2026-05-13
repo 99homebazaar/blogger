@@ -16,7 +16,11 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     const nameList: string[] = Array.isArray(websiteNames) ? websiteNames : JSON.parse(websiteNames ?? "[]");
-
+    const uniqueSlug = await Post.findOne({ slug });
+    if (uniqueSlug) {
+      res.status(400).json({ error: "Slug must be unique" });
+      return;
+    }
     let websiteIds: any[] = [];
     if (nameList.length > 0) {
       const foundWebsites = await Website.find({ name: { $in: nameList } });
@@ -70,6 +74,17 @@ router.get("/name/:name", async (req: Request, res: Response) => {
 router.get("/:id", async (req: Request, res: Response) => {
   try {
     const post = await Post.findById(req.params.id).populate("websiteNames", "name");
+    if (!post) { res.status(404).json({ error: "Post not found" }); return; }
+    res.json({ post });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+});
+
+// GET /api/posts/:slug
+router.get("/:slug", async (req: Request, res: Response) => {
+  try {
+    const post = await Post.findOne({ slug: req.params.slug }).populate("websiteNames", "name");
     if (!post) { res.status(404).json({ error: "Post not found" }); return; }
     res.json({ post });
   } catch (err) {

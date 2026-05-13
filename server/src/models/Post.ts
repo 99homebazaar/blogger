@@ -10,7 +10,7 @@ const PostSchema = new Schema(
     websiteNames: [{ type: Schema.Types.ObjectId, ref: "Website" }],
     metaTitle: { type: String, default: "" },
     metaDescription: { type: String, default: "" },
-    slug: { type: String, default: "" },
+    slug: { type: String, default: "", required: true, unique: true },
     imgAlt: { type: String, default: "" },
     schemaMarkup: { type: String, default: "" },
   },
