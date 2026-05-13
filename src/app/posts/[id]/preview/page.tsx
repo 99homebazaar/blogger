@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import ReactMarkdown from "react-markdown";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -53,19 +52,22 @@ export default function PreviewPost() {
         .sti-h1{font-family:'Playfair Display',serif!important;font-size:clamp(26px,4.5vw,42px)!important;font-weight:800!important;color:var(--dark)!important;line-height:1.22!important;margin:0 0 18px!important;}
         .sti-lead{font-size:17px;font-style:italic;color:var(--mid);line-height:1.82;border-left:3px solid var(--acc);padding-left:18px;margin:0 0 36px!important;}
         .sti-orn{text-align:center;margin:4px 0 36px;color:var(--acc);font-size:17px;letter-spacing:10px;opacity:.4;}
-        .sti-body{font-size:16.5px;line-height:1.92;color:var(--body);}
-        .sti-body h2{font-family:'Playfair Display',serif!important;font-size:22px!important;font-weight:700!important;color:var(--dark)!important;line-height:1.3!important;margin:36px 0 12px!important;}
-        .sti-body h3{font-family:'Playfair Display',serif!important;font-size:18px!important;font-weight:600!important;color:var(--dark)!important;margin:28px 0 10px!important;}
-        .sti-body p{margin:0 0 15px!important;line-height:1.9!important;color:var(--body)!important;}
-        .sti-body ul,.sti-body ol{padding-left:26px!important;margin:0 0 18px!important;}
-        .sti-body li{margin-bottom:8px!important;color:var(--body)!important;line-height:1.75!important;}
+        .sti-body *{max-width:100%;box-sizing:border-box;}
+        .sti-body h1,.sti-body h2,.sti-body h3,.sti-body h4,.sti-body h5,.sti-body h6{all:revert;font-family:'Playfair Display',serif!important;color:var(--dark)!important;}
+        .sti-body h2{font-size:22px!important;font-weight:700!important;line-height:1.3!important;margin:36px 0 12px!important;}
+        .sti-body h3{font-size:18px!important;font-weight:600!important;margin:28px 0 10px!important;}
+        .sti-body p{all:revert;font-family:'Lora',Georgia,serif!important;margin:0 0 15px!important;line-height:1.9!important;color:var(--body)!important;font-size:16.5px!important;}
+        .sti-body ul,.sti-body ol{all:revert;padding-left:26px!important;margin:0 0 18px!important;font-family:'Lora',Georgia,serif!important;}
+        .sti-body li{all:revert;margin-bottom:8px!important;color:var(--body)!important;line-height:1.75!important;font-size:16.5px!important;}
         .sti-body ul li{list-style-type:disc!important;}
         .sti-body ol li{list-style-type:decimal!important;}
         .sti-body strong,.sti-body b{font-weight:700!important;color:var(--dark)!important;}
-        .sti-body em,.sti-body i{font-style:italic;}
-        .sti-body a{color:var(--acc)!important;text-decoration:underline!important;text-underline-offset:3px;}
-        .sti-body blockquote{border-left:3px solid var(--acc)!important;padding:14px 20px!important;margin:24px 0!important;color:var(--mid)!important;font-style:italic;background:var(--acc-bg)!important;border-radius:0 5px 5px 0;}
-        .sti-body img{max-width:100%!important;height:auto!important;border-radius:6px;margin:22px 0!important;display:block;}
+        .sti-body em,.sti-body i{font-style:italic!important;}
+        .sti-body a{color:var(--acc)!important;text-decoration:underline!important;text-underline-offset:3px!important;}
+        .sti-body blockquote{all:revert;border-left:3px solid var(--acc)!important;padding:14px 20px!important;margin:24px 0!important;color:var(--mid)!important;font-style:italic!important;background:var(--acc-bg)!important;border-radius:0 5px 5px 0!important;}
+        .sti-body img{max-width:100%!important;height:auto!important;border-radius:6px!important;margin:22px 0!important;display:block!important;}
+        .sti-body pre{background:var(--acc-bg)!important;padding:14px 18px!important;border-radius:6px!important;overflow-x:auto!important;margin-bottom:16px!important;}
+        .sti-body code{background:var(--acc-bg)!important;padding:2px 6px!important;border-radius:3px!important;font-size:0.9em!important;}
         .sti-divider{border:none;border-top:1px solid var(--border);margin:36px 0!important;}
         .sti-back-row{margin-top:52px;padding-top:24px;border-top:1px solid var(--border);}
         .sti-back{display:inline-flex;align-items:center;gap:8px;color:var(--acc)!important;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;text-decoration:none!important;cursor:pointer;transition:gap .2s;}
@@ -95,9 +97,7 @@ export default function PreviewPost() {
           {post.shortDescription && <p className="sti-lead">{post.shortDescription}</p>}
           <div className="sti-orn">✦ ✦ ✦</div>
 
-          <div className="sti-body">
-            <ReactMarkdown>{post.description}</ReactMarkdown>
-          </div>
+          <div className="sti-body" dangerouslySetInnerHTML={{ __html: post.description }} />
 
           <div className="sti-back-row">
             <span className="sti-back" onClick={() => router.back()}>

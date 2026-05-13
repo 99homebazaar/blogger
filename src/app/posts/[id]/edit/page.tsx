@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
+
+const RichEditor = dynamic(() => import("@/components/RichEditor"), { ssr: false });
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
@@ -114,9 +114,7 @@ export default function EditPost() {
 
           <div className="flex flex-col gap-1">
             <label className="text-xs text-gray-500 uppercase tracking-wider">Full Description</label>
-            <div data-color-mode="light">
-              <MDEditor value={form.description} onChange={(val) => setForm({ ...form, description: val ?? "" })} height={250} preview="edit" />
-            </div>
+            <RichEditor value={form.description} onChange={(val) => setForm({ ...form, description: val })} />
           </div>
 
           <input className="input" placeholder="Category" required value={form.category}
